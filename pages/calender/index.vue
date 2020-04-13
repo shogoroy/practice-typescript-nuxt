@@ -60,32 +60,35 @@ export default Vue.extend({
   }),
   computed: {
     weeks() {
-      const endDate = moment([this.year, this.month, this.date])
-        .endOf('month')
-        .date()
-      let day = today.startOf('month').day()
-      let week = {
-        id: 1,
-        startDay: day,
-        dates: new Array(day).fill(undefined)
-      }
+      const targetMoment = moment([this.year, this.month, this.date])
+
+      const endDate = targetMoment.endOf('month').date()
+      let day = targetMoment.startOf('month').day()
 
       const weeks = []
-      for (let date = 1; date <= endDate; date++) {
-        week.dates.push(date)
-        day++
+      if (!isNaN(endDate) && !isNaN(day)) {
+        let week = {
+          id: 1,
+          startDay: day,
+          dates: new Array(day).fill(undefined)
+        }
 
-        if (day % 7 === 0) {
-          weeks.push(week)
-          day = 0
-          week = {
-            id: date + 1,
-            startDay: 0,
-            dates: []
+        for (let date = 1; date <= endDate; date++) {
+          week.dates.push(date)
+          day++
+
+          if (day % 7 === 0) {
+            weeks.push(week)
+            day = 0
+            week = {
+              id: date + 1,
+              startDay: 0,
+              dates: []
+            }
           }
         }
+        weeks.push(week)
       }
-      weeks.push(week)
 
       return weeks
     }
